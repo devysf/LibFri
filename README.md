@@ -1,3 +1,3 @@
 # LibFri
 
-My first mean stack app to practise what i learned.
+My first men-stack app to practise what i learned.
