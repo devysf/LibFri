@@ -1,22 +1,14 @@
 var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose");
-
+    mongoose    = require("mongoose"),
+    Book        = require("./models/book"),
+    seedDb      = require("./seeds");
 
 mongoose.connect("mongodb://localhost/lib_fri");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-
-// set schema
-var bookSchema = new mongoose.Schema({
-  name        : String,
-  bImage      : String,
-  bAuthor     : String,
-  description : String
-});
-
-var Book = mongoose.model("Book",bookSchema);
+seedDb();
 
 app.get("/",function(req,res){
   res.render("home");
@@ -66,11 +58,15 @@ app.post("/books",function(req,res){
 // SHOW - shows more info about one book
 app.get("/books/:id",function(req,res){
   //find the book with provided ID
-  Book.findById(req.params.id,function(err, foundBook){
+  // to find comment in book collection , we use populate("comments")
+  Book.findById(req.params.id).populate("comments").exec(function(err, foundBook){
     if(err){
       console.log(err);
     }
     else {
+      // write
+      console.log(foundBook)
+
       //render show template with that book
       res.render("show",{book : foundBook} );
     }
