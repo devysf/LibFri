@@ -1,41 +1,80 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
+var express     = require("express"),
+    app         = express(),
+    bodyParser  = require("body-parser"),
+    mongoose    = require("mongoose");
 
+
+mongoose.connect("mongodb://localhost/lib_fri");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
-var books =[
-        { name:"The Da Vinci Code" , bAuthor:"Dan Brown" , bImage:"http://www.altinkitaplar.com.tr/static/img/2012/10/da-vinci-sifresi-m.jpg"},
-        { name:"The Da Vinci Code" , bAuthor:"Dan Brown" , bImage:"http://www.altinkitaplar.com.tr/static/img/2012/10/da-vinci-sifresi-m.jpg"},
-        { name:"The Da Vinci Code" , bAuthor:"Dan Brown" , bImage:"http://www.altinkitaplar.com.tr/static/img/2012/10/da-vinci-sifresi-m.jpg"},
-        { name:"The Da Vinci Code" , bAuthor:"Dan Brown" , bImage:"http://www.altinkitaplar.com.tr/static/img/2012/10/da-vinci-sifresi-m.jpg"}
-      ];
+// set schema
+var bookSchema = new mongoose.Schema({
+  name        : String,
+  bImage      : String,
+  bAuthor     : String,
+  description : String
+});
 
-//Basic roote settings
+var Book = mongoose.model("Book",bookSchema);
+
 app.get("/",function(req,res){
   res.render("home");
 });
 
+//INDEX - show all books
 app.get("/books",function(req,res){
-  res.render("books",{books : books});
+  // Get all books from DB
+  Book.find({},function(err,allBooks){
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("index",{books : allBooks} );
+    }
+  });
 });
 
+
+//NEW - show form to create new book
 app.get("/books/new",function(req,res){
   res.render("new");
 });
 
+//CREATE - add new book to DB
 app.post("/books",function(req,res){
-  //to parse req.body , we import body-parser at the top
+  // get data from form and add to database
   var name = req.body.name;
   var bImage = req.body.bImage;
   var bAuthor = req.body.bAuthor;
-  var newBook = {name : name , bImage: bImage, bAuthor: bAuthor};
+  var description = req.body.description;
+  var newBook = {name : name , bImage: bImage, bAuthor: bAuthor , description:description};
 
-  books.push(newBook);
+  // Create a new book and save to database
+  Book.create(newBook,function(err,newlyBook){
+    if(err){
+      console.log(err);
+    }
+    else{
 
-  res.redirect("/books");
+        res.redirect("/books");
+    }
+  });
+});
 
+
+// SHOW - shows more info about one book
+app.get("/books/:id",function(req,res){
+  //find the book with provided ID
+  Book.findById(req.params.id,function(err, foundBook){
+    if(err){
+      console.log(err);
+    }
+    else {
+      //render show template with that book
+      res.render("show",{book : foundBook} );
+    }
+  });
 });
 
 

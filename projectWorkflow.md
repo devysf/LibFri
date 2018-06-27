@@ -27,3 +27,17 @@ Creating New Books
  Style the Navbar and Form
 * Add a navbar to all templates
 * Style the new book form
+
+
+######################## step 2 #####################################
+
+
+##Add Mongoose
+* Install and configure Mongoose
+* Setup book model
+* Use book model inside of our routes
+
+
+##Show Page
+* Add description to our book model
+* Add a show route/template
