@@ -3,6 +3,7 @@ var express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
     Book        = require("./models/book"),
+    Comment     = require("./models/comment"),
     seedDb      = require("./seeds");
 
 mongoose.connect("mongodb://localhost/lib_fri");
@@ -22,7 +23,7 @@ app.get("/books",function(req,res){
       console.log(err);
     }
     else{
-      res.render("index",{books : allBooks} );
+      res.render("books/index",{books : allBooks} );
     }
   });
 });
@@ -30,7 +31,7 @@ app.get("/books",function(req,res){
 
 //NEW - show form to create new book
 app.get("/books/new",function(req,res){
-  res.render("new");
+  res.render("books/new");
 });
 
 //CREATE - add new book to DB
@@ -68,7 +69,44 @@ app.get("/books/:id",function(req,res){
       console.log(foundBook)
 
       //render show template with that book
-      res.render("show",{book : foundBook} );
+      res.render("books/show",{book : foundBook} );
+    }
+  });
+});
+
+
+// COMMENTS ROUTES
+
+app.get("/books/:id/comments/new",function(req,res){
+  //find book by id . Dont foreget every book object has comment models
+
+  Book.findById(req.params.id, function(err,book){
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("comments/new", {book : book});
+    }
+  });
+});
+
+app.post("/books/:id/comments",function(req,res){
+  //find books with id
+  Book.findById(req.params.id,function(err,book){
+    if(err){
+      console.log(err);
+    }
+    else{
+      // create comment with given request
+      Comment.create(req.body.comment,function(err,comment){
+        if(err){
+          console.log(err);
+        }
+        //add comment to book model
+        book.comments.push(comment);
+        book.save();
+        res.redirect("/books/" + book._id);
+      });
     }
   });
 });

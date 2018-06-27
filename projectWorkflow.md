@@ -54,5 +54,14 @@ Creating New Books
 * Run the seeds file every time the server starts
 
 ##Add the Comment model!
-* Make our errors go away!
 * Display comments on campground show page
+
+######################## step 4 #####################################
+
+##Refactor views folder
+* Split template pages with proper sub-folder
+
+
+##Comment New/Create
+* Add the comment new and create routes
+* Add the new comment form
