@@ -65,3 +65,10 @@ Creating New Books
 ##Comment New/Create
 * Add the comment new and create routes
 * Add the new comment form
+
+
+##################### step 5 #########################################
+
+##Finish Styling Show Page
+* Add public directory
+* Add custom stylesheet
