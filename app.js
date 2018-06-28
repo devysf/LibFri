@@ -137,6 +137,50 @@ app.post("/books/:id/comments",function(req,res){
 });
 
 
+// AUTH routes
+
+//show register form
+app.get("/register",function(req,res){
+  res.render("register");
+});
+
+//sign up logic
+app.post("/register",function(req,res){
+  var newUser = new User({username : req.body.username });
+  User.register(newUser,req.body.password,function(err,user){
+    if(err){
+      console.log(err);
+      return res.render("register");
+    }
+
+    passport.authenticate("local")(req,res,function(){
+      res.redirect("/books");
+    });
+
+  });
+});
+
+//show login Form
+app.get("/login",function(req,res){
+  res.render("login");
+});
+
+//login logic
+app.post("/login",passport.authenticate("local",
+  {
+    successRedirect : "/books",
+    failureRedirect : "/login"
+  }), function(req,res){
+
+});
+
+
+
+
+
+
+
+
 app.listen(3000,function(){
   console.log("The server has started");
 });
