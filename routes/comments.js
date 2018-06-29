@@ -33,9 +33,18 @@ router.post("/",isLoggedIn, function(req,res){
         if(err){
           console.log(err);
         }
+        //add username and id to comment collections
+        comment.cAuthor.id = req.user._id;
+        comment.cAuthor.username = req.user.username;
+
+        comment.save();
+
         //add comment to book model
         book.comments.push(comment);
         book.save();
+
+        console.log(comment);
+
         res.redirect("/books/" + book._id);
       });
     }

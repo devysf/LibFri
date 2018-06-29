@@ -105,3 +105,10 @@ Creating New Books
 
 ##Refactor The Routes
 * Use Express router to reoragnize all routes
+
+
+##################### step 8 #########################################
+
+##Users + Comments
+* Associate users and comments
+* Save author's name to a comment automatically

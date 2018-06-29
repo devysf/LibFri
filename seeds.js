@@ -31,7 +31,7 @@ function seedDb(){
       console.log(err);
     }
     console.log("removed books");
-
+    /*
     data.forEach(function(seed){
       Book.create(seed,function(err,book){
         if(err){
@@ -60,6 +60,7 @@ function seedDb(){
           }
       });
     });
+    */
   });
 }
 
