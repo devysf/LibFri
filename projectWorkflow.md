@@ -54,7 +54,7 @@ Creating New Books
 * Run the seeds file every time the server starts
 
 ##Add the Comment model!
-* Display comments on campground show page
+* Display comments on book show page
 
 ######################## step 4 #####################################
 
@@ -116,6 +116,6 @@ Creating New Books
 
 ##################### step 9 #########################################
 
-##Users + Campgrounds
-* Prevent an unauthenticated user from creating a campground
-* Save username+id to newly created campground
+##Users + books
+* Prevent an unauthenticated user from creating a books
+* Save username+id to newly created book
