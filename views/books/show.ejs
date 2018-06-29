@@ -16,6 +16,9 @@
                     <h4 class="pull-right">Ankara</h4>
                     <h4><a><%=book.name%> (<%= book.bAuthor %>)</a></h4>
                     <p><%= book.description %></p>
+                    <p>
+                      <em>Submitted By <%= book.author.username %></em>
+                    </p>
                 </div>
             </div>
             <div class="well">

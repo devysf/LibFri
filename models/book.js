@@ -5,6 +5,13 @@ var bookSchema = new mongoose.Schema({
   bImage : String,
   bAuthor : String,
   description : String,
+  author : {
+            id:{
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User"
+            },
+            username : String
+  },
 
   comments : [
       {

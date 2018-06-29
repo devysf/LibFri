@@ -43,8 +43,6 @@ router.post("/",isLoggedIn, function(req,res){
         book.comments.push(comment);
         book.save();
 
-        console.log(comment);
-
         res.redirect("/books/" + book._id);
       });
     }

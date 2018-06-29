@@ -18,18 +18,24 @@ router.get("/",function(req,res){
 
 
 //NEW - show form to create new book
-router.get("/new",function(req,res){
+router.get("/new",isLoggedIn,function(req,res){
   res.render("books/new");
 });
 
 //CREATE - add new book to DB
-router.post("/",function(req,res){
+router.post("/",isLoggedIn,function(req,res){
   // get data from form and add to database
   var name = req.body.name;
   var bImage = req.body.bImage;
   var bAuthor = req.body.bAuthor;
   var description = req.body.description;
-  var newBook = {name : name , bImage: bImage, bAuthor: bAuthor , description:description};
+  //create author variable. This variable is saved database to specify user who was added book
+  var author = {
+    id : req.user._id,
+    username : req.user.username
+  }
+  var newBook = {name : name , bImage: bImage, bAuthor: bAuthor , description:description,
+                  author : author};
 
   // Create a new book and save to database
   Book.create(newBook,function(err,newlyBook){
@@ -52,13 +58,19 @@ router.get("/:id",function(req,res){
       console.log(err);
     }
     else {
-      // write
-      console.log(foundBook)
-
+      
       //render show template with that book
       res.render("books/show",{book : foundBook} );
     }
   });
 });
+
+
+function isLoggedIn(req, res, next){
+  if(req.isAuthenticated() ){
+    return next();
+  }
+  res.redirect("/login");
+}
 
 module.exports = router;
