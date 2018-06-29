@@ -34,6 +34,11 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
+//we pass this variable template pages to use this variable in that file. then we can easily control which user is logged in
+app.use(function(req,res,next){
+  res.locals.currentUser = req.user;
+  next();
+})
 
 //home page route
 app.get("/",function(req,res){
@@ -102,7 +107,8 @@ app.get("/books/:id",function(req,res){
 
 // COMMENTS ROUTES
 
-app.get("/books/:id/comments/new",function(req,res){
+// we add isLoggedIn middleware function because of preventing new comments from user who is not logged in
+app.get("/books/:id/comments/new",isLoggedIn ,function(req,res){
   //find book by id . Dont foreget every book object has comment models
 
   Book.findById(req.params.id, function(err,book){
@@ -115,7 +121,8 @@ app.get("/books/:id/comments/new",function(req,res){
   });
 });
 
-app.post("/books/:id/comments",function(req,res){
+// we add isLoggedIn middleware function because of preventing new comments from user who is not logged in
+app.post("/books/:id/comments",isLoggedIn, function(req,res){
   //find books with id
   Book.findById(req.params.id,function(err,book){
     if(err){
@@ -175,10 +182,19 @@ app.post("/login",passport.authenticate("local",
 });
 
 
+//logout routes
+app.get("/logout",function(req,res){
+  req.logout();
+  res.redirect("/books");
+});
 
 
-
-
+function isLoggedIn(req, res, next){
+  if(req.isAuthenticated() ){
+    return next();
+  }
+  res.redirect("/login");
+}
 
 
 app.listen(3000,function(){
