@@ -40,7 +40,7 @@ router.post("/",isLoggedIn,function(req,res){
   // Create a new book and save to database
   Book.create(newBook,function(err,newlyBook){
     if(err){
-      console.log(err);
+      console.log(err + "added book");
     }
     else{
         res.redirect("/books");
@@ -58,13 +58,48 @@ router.get("/:id",function(req,res){
       console.log(err);
     }
     else {
-      
+
       //render show template with that book
       res.render("books/show",{book : foundBook} );
     }
   });
 });
 
+//edit book route
+router.get("/:id/edit",function(req,res){
+  Book.findById(req.params.id,function(err, foundBook){
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("books/edit",{ book : foundBook});
+    }
+  })
+});
+
+//update book route
+router.put("/:id",function(req,res){
+  Book.findByIdAndUpdate(req.params.id,req.body.book,function(err,updatedBook){
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.redirect("/books/" + req.params.id);
+    }
+  });
+});
+
+//destroy book route
+router.delete("/:id",function(req,res){
+  Book.findByIdAndRemove(req.params.id,function(err){
+    if(err){
+      console.log(err + "deleted books");
+      res.redirect("/books");
+    }else{
+      res.redirect("/books");
+    }
+  });
+});
 
 function isLoggedIn(req, res, next){
   if(req.isAuthenticated() ){
