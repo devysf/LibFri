@@ -66,7 +66,7 @@ router.get("/:id",function(req,res){
 });
 
 //edit book route
-router.get("/:id/edit",function(req,res){
+router.get("/:id/edit",checkBookOwnership,function(req,res){
   Book.findById(req.params.id,function(err, foundBook){
     if(err){
       console.log(err);
@@ -78,7 +78,7 @@ router.get("/:id/edit",function(req,res){
 });
 
 //update book route
-router.put("/:id",function(req,res){
+router.put("/:id",checkBookOwnership,function(req,res){
   Book.findByIdAndUpdate(req.params.id,req.body.book,function(err,updatedBook){
     if(err){
       console.log(err);
@@ -90,7 +90,7 @@ router.put("/:id",function(req,res){
 });
 
 //destroy book route
-router.delete("/:id",function(req,res){
+router.delete("/:id",checkBookOwnership,function(req,res){
   Book.findByIdAndRemove(req.params.id,function(err){
     if(err){
       console.log(err + "deleted books");
@@ -106,6 +106,33 @@ function isLoggedIn(req, res, next){
     return next();
   }
   res.redirect("/login");
+}
+
+function checkBookOwnership(req,res,next){
+  //check user is authenticate
+  if(req.isAuthenticated() ){
+    Book.findById(req.params.id, function(err, foundBook){
+      if(err){
+        console.log(err);
+        res.redirect("back");
+      }
+      else{
+        //we know , user is authenticated but we want to know user was shared this book post
+        if(foundBook.author.id.equals(req.user._id) ){
+          next();
+        }
+        // if this user dont has this book post, dont allow this process
+        else{
+          res.redirect("back");
+        }
+      }
+    });
+  }
+
+  // if user is not logged in , dont allow this process
+  else{
+    res.redirect("back");
+  }
 }
 
 module.exports = router;
