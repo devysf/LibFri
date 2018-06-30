@@ -2,12 +2,12 @@ var express = require("express");
 var router = express.Router({mergeParams : true});
 var Book = require("../models/book");
 var Comment = require("../models/comment");
-
+var midObj = require("../middleware");
 
 // COMMENTS ROUTES
 
 // we add isLoggedIn middleware function because of preventing new comments from user who is not logged in
-router.get("/new",isLoggedIn ,function(req,res){
+router.get("/new",midObj.isLoggedIn ,function(req,res){
   //find book by id . Dont foreget every book object has comment models
 
   Book.findById(req.params.id, function(err,book){
@@ -21,7 +21,7 @@ router.get("/new",isLoggedIn ,function(req,res){
 });
 
 // we add isLoggedIn middleware function because of preventing new comments from user who is not logged in
-router.post("/",isLoggedIn, function(req,res){
+router.post("/",midObj.isLoggedIn, function(req,res){
   //find books with id
   Book.findById(req.params.id,function(err,book){
     if(err){
@@ -50,7 +50,7 @@ router.post("/",isLoggedIn, function(req,res){
 });
 
 //comment edit route
-router.get("/:comment_id/edit",checkCommentOwnership,function(req,res){
+router.get("/:comment_id/edit",midObj.checkCommentOwnership,function(req,res){
   Comment.findById(req.params.comment_id,function(err,foundComment){
     if(err){
       console.log(err + "comment edit route");
@@ -62,7 +62,7 @@ router.get("/:comment_id/edit",checkCommentOwnership,function(req,res){
 });
 
 //comment update route
-router.put("/:comment_id",checkCommentOwnership,function(req,res){
+router.put("/:comment_id",midObj.checkCommentOwnership,function(req,res){
   Comment.findByIdAndUpdate(req.params.comment_id,req.body.comment,function(err,updatedComment){
     if(err){
       console.log(err+ "comment update route");
@@ -75,7 +75,7 @@ router.put("/:comment_id",checkCommentOwnership,function(req,res){
 });
 
 //comment destroy route
-router.delete("/:comment_id",checkCommentOwnership,function(req,res){
+router.delete("/:comment_id",midObj.checkCommentOwnership,function(req,res){
   Comment.findByIdAndRemove(req.params.comment_id,function(err){
     if(err){
       console.log(err+ "comment destroy route");
@@ -86,37 +86,6 @@ router.delete("/:comment_id",checkCommentOwnership,function(req,res){
   })
 });
 
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated() ){
-    return next();
-  }
-  res.redirect("/login");
-}
 
-function checkCommentOwnership(req,res,next){
-  //check user is authenticate
-  if(req.isAuthenticated() ){
-    Comment.findById(req.params.comment_id,function(err,foundComment){
-      if(err){
-        console.log(err);
-        res.redirect("back");
-      }else{
-        //we know , user is authenticated but we want to know user was shared this comment post
-        if(foundComment.cAuthor.id.equals(req.user._id) ){
-          next();
-        }
-        // if this user dont has this book post, dont allow this process
-        else{
-          res.redirect("back");
-        }
-      }
-    });
-  }
-
-  // if user is not logged in , dont allow this process
-  else{
-    res.redirect("back");
-  }
-}
 
 module.exports = router;
