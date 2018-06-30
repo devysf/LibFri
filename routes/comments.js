@@ -50,7 +50,7 @@ router.post("/",isLoggedIn, function(req,res){
 });
 
 //comment edit route
-router.get("/:comment_id/edit",function(req,res){
+router.get("/:comment_id/edit",checkCommentOwnership,function(req,res){
   Comment.findById(req.params.comment_id,function(err,foundComment){
     if(err){
       console.log(err + "comment edit route");
@@ -62,7 +62,7 @@ router.get("/:comment_id/edit",function(req,res){
 });
 
 //comment update route
-router.put("/:comment_id",function(req,res){
+router.put("/:comment_id",checkCommentOwnership,function(req,res){
   Comment.findByIdAndUpdate(req.params.comment_id,req.body.comment,function(err,updatedComment){
     if(err){
       console.log(err+ "comment update route");
@@ -75,7 +75,7 @@ router.put("/:comment_id",function(req,res){
 });
 
 //comment destroy route
-router.delete("/:comment_id",function(req,res){
+router.delete("/:comment_id",checkCommentOwnership,function(req,res){
   Comment.findByIdAndRemove(req.params.comment_id,function(err){
     if(err){
       console.log(err+ "comment destroy route");
@@ -91,6 +91,32 @@ function isLoggedIn(req, res, next){
     return next();
   }
   res.redirect("/login");
+}
+
+function checkCommentOwnership(req,res,next){
+  //check user is authenticate
+  if(req.isAuthenticated() ){
+    Comment.findById(req.params.comment_id,function(err,foundComment){
+      if(err){
+        console.log(err);
+        res.redirect("back");
+      }else{
+        //we know , user is authenticated but we want to know user was shared this comment post
+        if(foundComment.cAuthor.id.equals(req.user._id) ){
+          next();
+        }
+        // if this user dont has this book post, dont allow this process
+        else{
+          res.redirect("back");
+        }
+      }
+    });
+  }
+
+  // if user is not logged in , dont allow this process
+  else{
+    res.redirect("back");
+  }
 }
 
 module.exports = router;

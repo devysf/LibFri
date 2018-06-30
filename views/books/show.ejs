@@ -39,12 +39,18 @@
                                 <%= comment.cText %>
                             </p>
 
-                            <a class="btn btn-xs btn-warning"
-                               href="/books/<%=book._id %>/comments/<%=comment._id %>/edit">Edit</a>
+                            <% if(currentUser && comment.cAuthor.id.equals(currentUser._id )) {%>
 
-                            <form id="delete-form" action="/books/<%=book._id %>/comments/<%=comment._id %>?_method=DELETE" method="POST">
-                                <input type="submit" class="btn btn-xs btn-danger" value="Delete">
-                            </form>
+                              <a class="btn btn-xs btn-warning"
+                                 href="/books/<%=book._id %>/comments/<%=comment._id %>/edit">Edit</a>
+
+                              <form id="delete-form" action="/books/<%=book._id %>/comments/<%=comment._id %>?_method=DELETE" method="POST">
+                                  <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                              </form>
+
+                            <% } %>
+
+
 
                         </div>
                     </div>
