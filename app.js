@@ -2,6 +2,7 @@ var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
     methodOverride = require("method-override"),
+    flash       = require("connect-flash"),
     mongoose    = require("mongoose"),
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
@@ -24,6 +25,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(methodOverride("_method"));
 
+app.use(flash());
 //seedDb();
 
 //PASSPORT.JS Congiguration
@@ -46,6 +48,8 @@ passport.deserializeUser(User.deserializeUser());
 //we pass this variable template pages to use this variable in that file. then we can easily control which user is logged in
 app.use(function(req,res,next){
   res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
   next();
 });
 

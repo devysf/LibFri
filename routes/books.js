@@ -43,6 +43,7 @@ router.post("/",midObj.isLoggedIn,function(req,res){
       console.log(err + "added book");
     }
     else{
+        req.flash("success", "Successfully added books");
         res.redirect("/books");
     }
   });
@@ -84,6 +85,7 @@ router.put("/:id",midObj.checkBookOwnership,function(req,res){
       console.log(err);
     }
     else{
+      req.flash("success", "Successfully updated books");
       res.redirect("/books/" + req.params.id);
     }
   });
@@ -96,6 +98,7 @@ router.delete("/:id",midObj.checkBookOwnership,function(req,res){
       console.log(err + "deleted books");
       res.redirect("/books");
     }else{
+      req.flash("success", "Successfully deleted books");
       res.redirect("/books");
     }
   });

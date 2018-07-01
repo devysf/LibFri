@@ -8,6 +8,7 @@ var midObj = {};
   if(req.isAuthenticated() ){
     return next();
   }
+  req.flash("error", "You need to be logged in to do that");
   res.redirect("/login");
 }
 
@@ -26,6 +27,7 @@ midObj.checkBookOwnership = function(req,res,next){
         }
         // if this user dont has this book post, dont allow this process
         else{
+          req.flash("error", "You don't have permission to do that");
           res.redirect("back");
         }
       }
@@ -34,6 +36,7 @@ midObj.checkBookOwnership = function(req,res,next){
 
   // if user is not logged in , dont allow this process
   else{
+    req.flash("error", "You need to be logged in to do that");
     res.redirect("back");
   }
 }
@@ -52,6 +55,7 @@ midObj.checkCommentOwnership = function(req,res,next){
         }
         // if this user dont has this book post, dont allow this process
         else{
+          req.flash("error", "You don't have permission to do that");
           res.redirect("back");
         }
       }
@@ -60,6 +64,7 @@ midObj.checkCommentOwnership = function(req,res,next){
 
   // if user is not logged in , dont allow this process
   else{
+    req.flash("error", "You need to be logged in to do that");
     res.redirect("back");
   }
 }

@@ -43,6 +43,7 @@ router.post("/",midObj.isLoggedIn, function(req,res){
         book.comments.push(comment);
         book.save();
 
+        req.flash("success", "Successfully added comment");
         res.redirect("/books/" + book._id);
       });
     }
@@ -69,6 +70,7 @@ router.put("/:comment_id",midObj.checkCommentOwnership,function(req,res){
       res.redirect("back");
     }
     else {
+      req.flash("success", "Comment updated");
       res.redirect("/books/" + req.params.id);
     }
   });
@@ -81,6 +83,7 @@ router.delete("/:comment_id",midObj.checkCommentOwnership,function(req,res){
       console.log(err+ "comment destroy route");
       res.redirect("back");
     }else{
+      req.flash("success", "Comment deleted");
       res.redirect("/books/" + req.params.id);
     }
   })

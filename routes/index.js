@@ -26,6 +26,7 @@ router.post("/register",function(req,res){
     }
 
     passport.authenticate("local")(req,res,function(){
+      req.flash("success", "We are very happy to join our family. Welcome to LibFri " + user.username);
       res.redirect("/books");
     });
 
@@ -49,6 +50,7 @@ router.post("/login",passport.authenticate("local",
 
 //logout routes
 router.get("/logout",function(req,res){
+  req.flash("success", "Logged you out!");
   req.logout();
   res.redirect("/books");
 });
