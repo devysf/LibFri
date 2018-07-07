@@ -4,6 +4,7 @@ var bookSchema = new mongoose.Schema({
   name : String,
   bImage : String,
   bAuthor : String,
+  bCost : Number,
   description : String,
   author : {
             id:{

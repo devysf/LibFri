@@ -13,6 +13,9 @@
                     <input class="form-control" type="text" name="book[bImage]" value="<%= book.bImage %>">
                 </div>
                 <div class="form-group">
+                    <input class="form-control" type="number" name="book[bCost]" value="<%= book.bCost %>" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
                     <input class="form-control" type="text" name="book[description]" value="<%= book.description %>">
                 </div>
                 <div class="form-group">

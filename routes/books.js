@@ -28,13 +28,14 @@ router.post("/",midObj.isLoggedIn,function(req,res){
   var name = req.body.name;
   var bImage = req.body.bImage;
   var bAuthor = req.body.bAuthor;
+  var bCost = req.body.bCost;
   var description = req.body.description;
   //create author variable. This variable is saved database to specify user who was added book
   var author = {
     id : req.user._id,
     username : req.user.username
   }
-  var newBook = {name : name , bImage: bImage, bAuthor: bAuthor , description:description,
+  var newBook = {name : name , bImage: bImage, bAuthor: bAuthor ,bCost : bCost, description:description,
                   author : author};
 
   // Create a new book and save to database
