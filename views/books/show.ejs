@@ -12,7 +12,7 @@
                       <em>Submitted By <%= book.author.username %>, <%= moment(book.createdAt).fromNow() %></em>
                     </p>
 
-                    <% if(currentUser && book.author.id.equals(currentUser._id )) {%>
+                    <% if( (currentUser && book.author.id.equals(currentUser._id )) || (currentUser && currentUser.isAdmin)  ) {%>
 
                     <a class="btn btn-xs btn-warning" href="/books/<%= book._id %>/edit">Edit</a>
 
@@ -38,7 +38,7 @@
                                 <%= comment.cText %>
                             </p>
 
-                            <% if(currentUser && comment.cAuthor.id.equals(currentUser._id )) {%>
+                            <% if( (currentUser && comment.cAuthor.id.equals(currentUser._id )) || (currentUser && currentUser.isAdmin) ) {%>
 
                               <a class="btn btn-xs btn-warning"
                                  href="/books/<%=book._id %>/comments/<%=comment._id %>/edit">Edit</a>

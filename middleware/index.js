@@ -22,7 +22,7 @@ midObj.checkBookOwnership = function(req,res,next){
       }
       else{
         //we know , user is authenticated but we want to know user was shared this book post
-        if(foundBook.author.id.equals(req.user._id) ){
+        if(foundBook.author.id.equals(req.user._id) || req.user.isAdmin ){
           next();
         }
         // if this user dont has this book post, dont allow this process
@@ -50,7 +50,7 @@ midObj.checkCommentOwnership = function(req,res,next){
         res.redirect("back");
       }else{
         //we know , user is authenticated but we want to know user was shared this comment post
-        if(foundComment.cAuthor.id.equals(req.user._id) ){
+        if(foundComment.cAuthor.id.equals(req.user._id) || req.user.isAdmin ){
           next();
         }
         // if this user dont has this book post, dont allow this process
