@@ -53,6 +53,11 @@ app.use(function(req,res,next){
   next();
 });
 
+//Now moment is available for use in all of your view files
+//via the variable named moment
+app.locals.moment = require('moment');
+
+
 app.use("/",indexRoutes);
 app.use("/books",bookRoutes);
 app.use("/books/:id/comments",commentRoutes);
