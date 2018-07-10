@@ -9,7 +9,7 @@
                     <h4><a><%=book.name%> (<%= book.bAuthor %>)</a></h4>
                     <p><%= book.description %></p>
                     <p>
-                      <em>Submitted By <%= book.author.username %>, <%= moment(book.createdAt).fromNow() %></em>
+                      <em>Submitted By <a href="/users/<%= book.author.id %>"> <%= book.author.username %> </a>, <%= moment(book.createdAt).fromNow() %></em>
                     </p>
 
                     <% if( (currentUser && book.author.id.equals(currentUser._id )) || (currentUser && currentUser.isAdmin)  ) {%>
