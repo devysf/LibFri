@@ -11,7 +11,7 @@ var express     = require("express"),
     Comment     = require("./models/comment"),
     User        = require("./models/user"),
     seedDb      = require("./seeds");
-
+    
 
 // importing ROUTES
 var commentRoutes = require("./routes/comments"),
