@@ -5,17 +5,42 @@ var midObj = require("../middleware");
 
 //INDEX - show all books
 router.get("/",function(req,res){
-  // Get all books from DB
-  Book.find({},function(err,allBooks){
-    if(err){
-      console.log(err);
-    }
-    else{
-      res.render("books/index",{books : allBooks, page: 'books'} );
-    }
-  });
+  if(req.query.search){
+    const regex = new RegExp(escapeRegex(req.query.search),'gi');
+    // Get all books from DB
+    Book.find({name: regex},function(err,allBooks){
+      if(err){
+        console.log(err);
+      }
+      else{
+
+        if(allBooks.length<1){
+          res.render("books/index",{books : allBooks, page: 'books',error: "No books match that query, please try again."} );
+        }
+        else {
+          res.render("books/index",{books : allBooks, page: 'books',success: "All books match that your query."} );
+        }
+
+      }
+    });
+
+  }
+  else {
+    // Get all books from DB
+    Book.find({},function(err,allBooks){
+      if(err){
+        console.log(err);
+      }
+      else{
+        res.render("books/index",{books : allBooks, page: 'books' } );
+      }
+    });
+  }
 });
 
+function escapeRegex(text){
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 
 //NEW - show form to create new book
 router.get("/new",midObj.isLoggedIn,function(req,res){
