@@ -2,21 +2,22 @@
     <div class="row">
         <h1 style="text-align: center">Create a Book to show your friends</h1>
         <div style="width: 30%; margin: 25px auto;">
-            <form action="/books" method="POST">
+            <form action="/books" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <input class="form-control" type="text" name="name" placeholder="name">
+                    <input class="form-control" type="text" name="book[name]" placeholder="name">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="bImage" placeholder="image url">
+                    <label for="image">Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="bAuthor" placeholder="author">
+                    <input class="form-control" type="text" name="book[bAuthor]" placeholder="author">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="number" name="bCost" placeholder="cost" step="0.01" min="0" required>
+                    <input class="form-control" type="number" name="book[bCost]" placeholder="cost" step="0.01" min="0" required>
                 </div>
                 <div class="form-group">
-                   <input class="form-control" type="text" name="description" placeholder="description">
+                   <input class="form-control" type="text" name="book[description]" placeholder="description">
                </div>
 
                 <div class="form-group">

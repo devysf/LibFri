@@ -11,7 +11,8 @@ var express     = require("express"),
     Comment     = require("./models/comment"),
     User        = require("./models/user"),
     seedDb      = require("./seeds");
-    
+
+    require('dotenv').config()
 
 // importing ROUTES
 var commentRoutes = require("./routes/comments"),
