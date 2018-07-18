@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var bookSchema = new mongoose.Schema({
   name : String,
   bImage : String,
+  imageId: { type : String, default : "asd" },
   bAuthor : String,
   bCost : Number,
   description : String,

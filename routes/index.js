@@ -7,7 +7,6 @@ var async = require("async");
 var nodemailer = require("nodemailer");
 var crypto = require("crypto");
 
-require('dotenv').config()
 
 //home page route
 router.get("/",function(req,res){

@@ -7,7 +7,7 @@ var midObj = require("../middleware");
 var multer = require('multer');
 var storage = multer.diskStorage({
   filename: function(req, file, callback) {
-    callback(null, Date.now() + file.originalname);
+    callback(null, Date.now() +   file.originalname);
   }
 });
 var imageFilter = function (req, file, cb) {
@@ -63,7 +63,7 @@ router.get("/",function(req,res){
 });
 
 function escapeRegex(text){
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*?.,\\^$|#\s]/g, "\\$&");
 }
 
 //NEW - show form to create new book
@@ -74,11 +74,20 @@ router.get("/new",midObj.isLoggedIn,function(req,res){
 //CREATE - add new book to DB
 router.post("/",midObj.isLoggedIn, upload.single('image'), function(req,res){
 
-  cloudinary.uploader.upload(req.file.path, function(result) {
+  cloudinary.v2.uploader.upload(req.file.path, function(err,result) {
+
+    if(err){
+      req.flash("error",err.message);
+      return res.redirect("back");
+    }
 
     // add cloudinary url for the image to the book object under image property
     req.body.book.bImage = result.secure_url;
-    // add author to campground
+
+    // add image's public_id to book object
+    req.body.book.imageId = result.public_id;
+
+    // add author to book
     req.body.book.author = {
       id: req.user._id,
       username: req.user.username
@@ -91,7 +100,7 @@ router.post("/",midObj.isLoggedIn, upload.single('image'), function(req,res){
         return res.redirect('back');
       }
       req.flash("success", "Successfully added books");
-      res.redirect('/books/' + book.id);
+      res.redirect('/books/' +  book.id);
     });
   });
 
@@ -127,27 +136,61 @@ router.get("/:id/edit",midObj.checkBookOwnership,function(req,res){
 });
 
 //update book route
-router.put("/:id",midObj.checkBookOwnership,function(req,res){
-  Book.findByIdAndUpdate(req.params.id,req.body.book,function(err,updatedBook){
+router.put("/:id",midObj.checkBookOwnership, upload.single("image"), function(req,res){
+  Book.findById(req.params.id, async function(err,book){
     if(err){
       console.log(err);
     }
     else{
-      req.flash("success", "Successfully updated books");
-      res.redirect("/books/" + req.params.id);
-    }
+        if (req.file ) {
+              try {
+                  await cloudinary.v2.uploader.destroy(book.imageId);
+                  var result = await cloudinary.v2.uploader.upload(req.file.path);
+                  book.imageId = result.public_id;
+                  book.bImage = result.secure_url;
+              } catch(err) {
+                  req.flash("error", err.message);
+                  return res.redirect("back");
+              }
+            }
+
+
+            book.name = req.body.book.name;
+            book.bAuthor = req.body.book.bAuthor;
+            book.bCost = req.body.book.bCost;
+            book.description = req.body.book.description;
+
+            book.save();
+
+            req.flash("success", "Successfully updated books");
+            res.redirect("/books/" +  req.params.id);
+
+
+      }
   });
 });
 
 //destroy book route
 router.delete("/:id",midObj.checkBookOwnership,function(req,res){
-  Book.findByIdAndRemove(req.params.id,function(err){
+  Book.findById(req.params.id, async function(err, book){
     if(err){
-      console.log(err + "deleted books");
-      res.redirect("/books");
+      console.log(err  + "deleted books");
+      return res.redirect("/books");
     }else{
-      req.flash("success", "Successfully deleted books");
-      res.redirect("/books");
+
+      try {
+        await cloudinary.v2.uploader.destroy(book.imageId);
+        book.remove();
+        req.flash('success', 'Book deleted successfully!');
+        res.redirect('/books');
+      }
+      catch(err) {
+
+        if(err) {
+          req.flash("error", err.message);
+          return res.redirect("back");
+        }
+      }
     }
   });
 });
