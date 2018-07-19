@@ -29,35 +29,63 @@ cloudinary.config({
 
 //INDEX - show all books
 router.get("/",function(req,res){
+
   if(req.query.search){
     const regex = new RegExp(escapeRegex(req.query.search),'gi');
     // Get all books from DB
-    Book.find({name: regex},function(err,allBooks){
-      if(err){
-        console.log(err);
-      }
-      else{
+    Book.find({name: regex}, function(err,allBooks){
 
-        if(allBooks.length<1){
-          res.render("books/index",{books : allBooks, page: 'books',error: "No books match that query, please try again."} );
+        if(err){
+          console.log(err);
         }
-        else {
-          res.render("books/index",{books : allBooks, page: 'books',success: "All books match that your query."} );
-        }
+        else{
 
-      }
+          if(allBooks.length<1){
+            res.render("books/index",{
+                books : allBooks,
+                page: 'books',
+                error: "No books match that query, please try again.",
+                current:1,
+                pages: 1
+              } );
+          }
+          else {
+            res.render("books/index",{
+                books : allBooks,
+                page: 'books',
+                success: "All books match that your query.",
+                current:1,
+                pages: 1
+              } );
+          }
+
+        }
     });
 
   }
   else {
+
+    var perPage = 8;
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
+
     // Get all books from DB
-    Book.find({},function(err,allBooks){
-      if(err){
-        console.log(err);
-      }
-      else{
-        res.render("books/index",{books : allBooks, page: 'books' } );
-      }
+    Book.find({}).skip( (perPage*pageNumber) - perPage).limit(perPage).exec( function(err,allBooks){
+      Book.count().exec(function(err,count){
+        if(err){
+          console.log(err);
+        }
+        else{
+
+          res.render("books/index",{
+            books : allBooks,
+            page: 'books' ,
+            current: pageNumber,
+            pages:Math.ceil(count/perPage)
+          });
+
+        }
+      });
     });
   }
 });
