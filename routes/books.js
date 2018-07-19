@@ -63,7 +63,7 @@ router.get("/",function(req,res){
 });
 
 function escapeRegex(text){
-  return text.replace(/[-[\]{}()*?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 
 //NEW - show form to create new book
