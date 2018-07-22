@@ -47,6 +47,10 @@ router.post("/register",function(req,res){
     res.render("register",{ loginFormErrors: loginFormErrors} );
   }
   else{
+    if(avatar===""){
+        avatar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB_9F_Uv5LMKMliN3TCLkF9yvqj_oFls8-aiLPGzX-ELCrDK8HqQ";
+    }
+
     var newUser = new User({
       username  : username,
       firstname : firstname,
