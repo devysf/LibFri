@@ -23,27 +23,52 @@ router.get("/register",function(req,res){
 
 //sign up logic
 router.post("/register",function(req,res){
+  var username  =  req.body.username,
+      password  = req.body.password,
+      password2 = req.body.password2,
+      firstname = req.body.firstname,
+      lastname  = req.body.lastname,
+      email     = req.body.email,
+      avatar    = req.body.avatar;
 
-  var newUser = new User({
-    username : req.body.username,
-    firstname: req.body.firstname,
-    lastname : req.body.lastname,
-    email: req.body.email,
-    avatar : req.body.avatar
-  });
+  // Form Validator
+  req.checkBody('username','Username field is required').notEmpty();
+  req.checkBody('email','Email field is required').notEmpty();
+  req.checkBody('email','Email is not valid').isEmail();
+  req.checkBody('firstname','Firstname field is required').notEmpty();
+  req.checkBody('lastname','Lastname field is required').notEmpty();
+  req.checkBody('password','Password field is required').notEmpty();
+  req.checkBody('password2','Passwords do not match').equals(req.body.password);
 
-  User.register(newUser,req.body.password,function(err,user){
-    if(err){
-      console.log(err);
-      return res.render("register", {error: err.message});
-    }
+  // Check Errors
+  var loginFormErrors = req.validationErrors();
 
-    passport.authenticate("local")(req,res,function(){
-      req.flash("success", "We are very happy to join our family. Welcome to LibFri " + user.username);
-      res.redirect("/books");
+  if(loginFormErrors){
+    res.render("register",{ loginFormErrors: loginFormErrors} );
+  }
+  else{
+    var newUser = new User({
+      username  : username,
+      firstname : firstname,
+      lastname  : lastname,
+      email     : email,
+      avatar    : avatar
     });
 
-  });
+    User.register(newUser,req.body.password,function(err,user){
+      if(err){
+        console.log(err);
+        return res.render("register", {error: err.message});
+      }
+
+      passport.authenticate("local")(req,res,function(){
+        req.flash("success", "We are very happy to join our family. Welcome to LibFri " + user.username);
+        res.redirect("/books");
+      });
+
+    });
+  }
+
 });
 
 //show login Form

@@ -7,6 +7,7 @@ var express     = require("express"),
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
     expressSession = require("express-session"),
+    expressValidator = require('express-validator'),
     Book        = require("./models/book"),
     Comment     = require("./models/comment"),
     User        = require("./models/user"),
@@ -51,6 +52,7 @@ app.use(function(req,res,next){
   res.locals.currentUser = req.user;
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
+  res.locals.loginFormErrors = req.flash("loginFormError");
   next();
 });
 
@@ -58,6 +60,23 @@ app.use(function(req,res,next){
 //via the variable named moment
 app.locals.moment = require('moment');
 
+// Validator settings
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root;
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
 
 app.use("/",indexRoutes);
 app.use("/books",bookRoutes);
