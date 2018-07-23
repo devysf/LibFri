@@ -9,7 +9,9 @@
                 <div class="caption-full">
                     <h4 class="pull-right">$<%= book.bCost %></h4>
                     <h4><a><%=book.name%> (<%= book.bAuthor %>)</a></h4>
-                    <p><%= book.description %></p>
+                    <div>
+                        <%- book.description %>
+                    </div>
                     <p>
                       <em>Submitted By <a href="/users/<%= book.author.id %>"> <%= book.author.username %> </a>, <%= moment(book.createdAt).fromNow() %></em>
                     </p>

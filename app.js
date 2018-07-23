@@ -12,7 +12,6 @@ var express     = require("express"),
     Comment     = require("./models/comment"),
     User        = require("./models/user"),
     seedDb      = require("./seeds");
-
     require('dotenv').config()
 
 // importing ROUTES
@@ -20,7 +19,9 @@ var commentRoutes = require("./routes/comments"),
     bookRoutes    = require("./routes/books"),
     indexRoutes   = require("./routes/index");
 
+
 mongoose.connect("mongodb://localhost/lib_fri");
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
