@@ -121,8 +121,6 @@ router.post("/",midObj.isLoggedIn, upload.single('image'), function(req,res){
       username: req.user.username
     }
 
-    req.body.book.description = req.sanitize(req.body.book.description);
-
     // Create a new book and save to database
     Book.create(req.body.book, function(err, book) {
       if (err) {
