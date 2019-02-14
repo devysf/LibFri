@@ -92,6 +92,8 @@ app.use("/", indexRoutes);
 app.use("/books", bookRoutes);
 app.use("/books/:id/comments", commentRoutes);
 
-app.listen(3000, function() {
+const port = process.env.PORT || 3000;
+
+app.listen(port, function() {
   console.log("The server has started");
 });
